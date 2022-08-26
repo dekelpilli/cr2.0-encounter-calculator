@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
@@ -27,7 +27,7 @@ jobs:
           native-image -jar target/cr2.0-encounter-calculator.jar \
                       --no-fallback \
                       --initialize-at-build-time \
-                      --initialize-at-run-time=sun.awt.X11 \
+#                      --initialize-at-run-time=sun.awt.X11 \
                       --report-unsupported-elements-at-runtime \
                       -H:IncludeResourceBundles=consoleui_messages \
                       -H:ReflectionConfigurationFiles=graal/reflect-config.json \
