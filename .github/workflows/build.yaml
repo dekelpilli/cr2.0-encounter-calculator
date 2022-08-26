@@ -24,9 +24,7 @@ jobs:
           mkdir -p classes
           clojure -M -e "(compile 'cr2.core)"
           clojure -M:uberjar --main-class cr2.core
-          ls
-          ls target
-          native-image -jar target/cr2.0-calculator.jar \
+          native-image -jar target/cr2.0-encounter-calculator.jar \
                        --no-fallback \
                        --initialize-at-build-time \
                        --report-unsupported-elements-at-runtime \
