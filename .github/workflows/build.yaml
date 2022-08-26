@@ -19,6 +19,7 @@ jobs:
         uses: DeLaGuardo/setup-clojure@9.4
         with:
           cli: 1.11.1
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Example step
         run: |
           mkdir -p classes
