@@ -1,6 +1,7 @@
 (ns cr2.core
   (:gen-class)
-  (:require [cr2.prompting :as p]))
+  (:require [cr2.prompting :as p]
+            [puget.printer :as puget]))
 
 (defmacro when-let* [bindings & body]
   (if (seq bindings)
@@ -86,4 +87,5 @@
        :options cr-options})))
 
 (defn -main [& _]
-  (cr2-encounter))
+  (-> (cr2-encounter)
+      puget/cprint))

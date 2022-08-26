@@ -5,4 +5,6 @@ native-image -jar target/cr2.0-calculator.jar \
         --no-fallback \
         --initialize-at-build-time \
         --report-unsupported-elements-at-runtime \
+        -H:IncludeResourceBundles=consoleui_messages \
+        -H:ReflectionConfigurationFiles=graal/reflect-config.json \
         -H:+ReportExceptionStackTraces

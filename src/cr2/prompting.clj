@@ -1,10 +1,11 @@
 (ns cr2.prompting
   (:require [clojure.string :as str]
             [flatland.ordered.map :refer [ordered-map]])
-  (:import (de.codeshelf.consoleui.prompt CheckboxResult ConsolePrompt InputResult ListResult)
+  (:import (de.codeshelf.consoleui.prompt ConsolePrompt InputResult ListResult)
+           (de.codeshelf.consoleui.prompt.builder ListPromptBuilder)
            (jline.console.completer Completer)))
 
-(def ^:private console-prompt (ConsolePrompt.))
+(def ^:private ^ConsolePrompt console-prompt (ConsolePrompt.))
 (def ^:private input-threshold 10)
 (def default-opts {:completer :regular
                    :sorted?   true
@@ -91,29 +92,6 @@
          (:comma-separated :comma-separated-once) (->> (str/split input #",")
                                                        (keep (comp value-mapper str/lower-case str/trim))))))))
 
-(defn >>distinct-items
-  ([coll] (>>distinct-items "Choose all that apply:" coll))
-  ([prompt coll & {:as opts}]
-   (let [opts (merge default-opts opts)
-         m (->stringified-map coll opts)]
-     (if (> (count m) input-threshold)
-       (->> (>>input prompt m :completer :comma-separated-once)
-            (set))
-       (let [prompt-builder (.getPromptBuilder console-prompt)]
-         (-> prompt-builder
-             (.createCheckboxPrompt)
-             (.message prompt)
-             (as-> builder (reduce
-                             #(doto %1 (-> (.newItem %2)
-                                           (.text %2)
-                                           (.add)))
-                             builder
-                             (keys m)))
-             (.addPrompt))
-         (-> (.prompt console-prompt (.build prompt-builder))
-             ^CheckboxResult (get prompt)
-             .getSelectedIds
-             (->> (into #{} (map m)))))))))
 
 (defn >>item
   ([coll] (>>item "Choose one from these:" coll))
@@ -122,17 +100,18 @@
          m (->stringified-map coll opts)]
      (if (> (count m) input-threshold)
        (>>input prompt m)
-       (let [prompt-builder (.getPromptBuilder console-prompt)]
-         (-> (.createListPrompt prompt-builder)
-             (.message prompt)
-             (as-> builder (reduce
-                             #(doto %1 (-> (.newItem %2)
-                                           (.text %2)
-                                           .add))
-                             builder
-                             (cond-> (keys m)
-                                     none-opt? (conj "\u001B[31mNone\u001B[0m"))))
-             .addPrompt)
+       (let [prompt-builder (.getPromptBuilder console-prompt)
+             lbp (-> (.createListPrompt prompt-builder)
+                     (.message prompt)
+                     (as-> builder (reduce
+                                     #(doto ^ListPromptBuilder %1
+                                        (-> (.newItem %2)
+                                            (.text %2)
+                                            .add))
+                                     builder
+                                     (cond-> (keys m)
+                                             none-opt? (conj "\u001B[31mNone\u001B[0m")))))]
+         (.addPrompt ^ListPromptBuilder lbp)
          (-> (.prompt console-prompt (.build prompt-builder))
              ^ListResult (get prompt)
              .getSelectedId

@@ -1,0 +1,9 @@
+[
+  {
+    "name": "jline.UnixTerminal",
+    "queryAllPublicConstructors" : true,
+    "methods": [
+      { "name" : "<init>", "parameterTypes" : [] }
+    ]
+  }
+]
