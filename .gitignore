@@ -1,0 +1,11 @@
+.idea
+*.swp
+*.iml
+.nrepl-port
+.cpcache
+target
+.DS_Store
+pom.xml
+.rebel_readline_history
+classes
+cr2.0-calculator*
