@@ -33,5 +33,5 @@ jobs:
                        -H:+ReportExceptionStackTraces
       - uses: actions/upload-artifact@v3
         with:
-          name: cr2.0-calculator
-          path: cr2.0-calculator
+          name: cr2.0-encounter-calculator
+          path: cr2.0-encounter-calculator
