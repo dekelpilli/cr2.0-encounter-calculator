@@ -43,7 +43,7 @@
                  (conj result (mapv pool indices))))
         result))))
 
-(defn- unordered-legal-selections [crs n lower upper]
+(defn- legal-cr-combinations [crs n lower upper]
   (sequence (comp
               (map (fn [crs] {:crs   crs
                               :total (transduce (map cr-power) + crs)}))
@@ -74,7 +74,7 @@
                         cr))
                     cr-power)
           cr-options (reduce (fn [acc n]
-                               (if-let [legal-cr-combos (-> (unordered-legal-selections
+                               (if-let [legal-cr-combos (-> (legal-cr-combinations
                                                               crs n target-monster-power-lower target-monster-power-upper)
                                                             not-empty)]
                                  (assoc acc n legal-cr-combos)
