@@ -28,7 +28,7 @@ jobs:
                       --no-fallback \
                       --report-unsupported-elements-at-runtime \
                       -H:IncludeResourceBundles=consoleui_messages,jline.console.completer.CandidateListCompletionHandler \
-                      -H:ReflectionConfigurationFiles=graal/reflect-config.json \
+                      -H:ReflectionConfigurationFiles=graal/reflect-config-unix.json \
                       -H:+ReportExceptionStackTraces
       - uses: actions/upload-artifact@v3
         with:
@@ -59,7 +59,7 @@ jobs:
                       --initialize-at-run-time=sun.awt.X11 \
                       --report-unsupported-elements-at-runtime \
                       -H:IncludeResourceBundles=consoleui_messages,jline.console.completer.CandidateListCompletionHandler \
-                      -H:ReflectionConfigurationFiles=graal/reflect-config.json \
+                      -H:ReflectionConfigurationFiles=graal/reflect-config-unix.json \
                       -H:+ReportExceptionStackTraces
       - uses: actions/upload-artifact@v3
         with:
@@ -89,7 +89,7 @@ jobs:
                       --no-fallback `
                       --report-unsupported-elements-at-runtime `
                       -H:IncludeResourceBundles=consoleui_messages,jline.console.completer.CandidateListCompletionHandler `
-                      -H:ReflectionConfigurationFiles=graal/reflect-config.json `
+                      -H:ReflectionConfigurationFiles=graal/reflect-config-ansi.json `
                       -H:+ReportExceptionStackTraces
       - uses: actions/upload-artifact@v3
         with:

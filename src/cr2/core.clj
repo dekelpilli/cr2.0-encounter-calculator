@@ -53,7 +53,7 @@
 (defn- select-multiplier []
   (when-let [{:keys [multiplier]} (p/>>item "What is the target difficulty of this encounter?" encounter-difficulties :sorted? false)]
     (if (= :custom multiplier)
-      (some-> 1 #_(p/>>input "What is the difficulty multiplier?") parse-double)
+      (some-> (p/>>input "What is the difficulty multiplier?") parse-double)
       multiplier)))
 
 ;TODO change to customised max amount of monsters, then derive min CR based on that

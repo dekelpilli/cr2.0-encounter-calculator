@@ -1,0 +1,9 @@
+[
+  {
+    "name": "jline.AnsiWindowsTerminal",
+    "queryAllPublicConstructors" : true,
+    "methods": [
+      { "name" : "<init>", "parameterTypes" : [] }
+    ]
+  }
+]
