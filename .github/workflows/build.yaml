@@ -91,6 +91,7 @@ jobs:
                       -H:IncludeResourceBundles=consoleui_messages,jline.console.completer.CandidateListCompletionHandler `
                       -H:ReflectionConfigurationFiles=graal/reflect-config-ansi.json `
                       -H:ResourceConfigurationFiles=graal/resources-config-windows.json `
+                      -H:JNIConfigurationFiles=graal/jni-config-windows.json `
                       -H:+ReportExceptionStackTraces
       - uses: actions/upload-artifact@v3
         with:
