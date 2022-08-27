@@ -91,7 +91,8 @@ jobs:
                       -H:IncludeResourceBundles=consoleui_messages,jline.console.completer.CandidateListCompletionHandler `
                       -H:ReflectionConfigurationFiles=graal/reflect-config.json `
                       -H:+ReportExceptionStackTraces
+          dir
       - uses: actions/upload-artifact@v3
         with:
-          name: cr2.0-encounter-calculator-macos
+          name: cr2.0-encounter-calculator-windows
           path: cr2.0-encounter-calculator
