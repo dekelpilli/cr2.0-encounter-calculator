@@ -87,5 +87,7 @@
        :options cr-options})))
 
 (defn -main [& _]
-  (-> (cr2-encounter)
-      puget/cprint))
+  (loop [result (cr2-encounter)]
+    (when result
+      (puget/cprint result)
+      (recur (cr2-encounter)))))
