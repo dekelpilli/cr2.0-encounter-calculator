@@ -15,7 +15,7 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: DeLaGuardo/setup-clojure@5.0
+      - uses: DeLaGuardo/setup-clojure@9.4
         with:
           cli: latest
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -45,7 +45,7 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: DeLaGuardo/setup-clojure@5.0
+      - uses: DeLaGuardo/setup-clojure@9.4
         with:
           cli: latest
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -76,17 +76,21 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: DeLaGuardo/setup-clojure@5.0
+      - uses: DeLaGuardo/setup-clojure@9.4
         with:
           cli: latest
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Graal image
         run: |
-          native-image --help
           mkdir -p classes
           clojure -M -e "(compile 'cr2.core)"
           clojure -M:uberjar --main-class cr2.core
-          native-image -jar target/cr2.0-encounter-calculator.jar --no-fallback --report-unsupported-elements-at-runtime -H:IncludeResourceBundles=consoleui_messages,jline.console.completer.CandidateListCompletionHandler -H:ReflectionConfigurationFiles=graal/reflect-config.json -H:+ReportExceptionStackTraces
+          native-image -jar target/cr2.0-encounter-calculator.jar `
+                      --no-fallback `
+                      --report-unsupported-elements-at-runtime `
+                      -H:IncludeResourceBundles=consoleui_messages,jline.console.completer.CandidateListCompletionHandler `
+                      -H:ReflectionConfigurationFiles=graal/reflect-config.json `
+                      -H:+ReportExceptionStackTraces
       - uses: actions/upload-artifact@v3
         with:
           name: cr2.0-encounter-calculator-macos
