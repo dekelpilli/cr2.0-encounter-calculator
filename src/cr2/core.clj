@@ -1,7 +1,8 @@
 (ns cr2.core
   (:gen-class)
   (:require [cr2.prompting :as p]
-            [puget.printer :as puget]))
+            [puget.printer :as puget])
+  (:import (org.fusesource.jansi AnsiConsole)))
 
 (defmacro when-let* [bindings & body]
   (if (seq bindings)
@@ -87,6 +88,7 @@
        :options cr-options})))
 
 (defn -main [& _]
+  (AnsiConsole/systemInstall)
   (loop [result (cr2-encounter)]
     (when result
       (puget/cprint result)
