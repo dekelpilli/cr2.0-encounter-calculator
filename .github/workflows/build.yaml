@@ -26,9 +26,8 @@ jobs:
           clojure -M:uberjar --main-class cr2.core
           native-image -jar target/cr2.0-encounter-calculator.jar \
                       --no-fallback \
-                      --initialize-at-build-time \
                       --report-unsupported-elements-at-runtime \
-                      -H:IncludeResourceBundles=consoleui_messages \
+                      -H:IncludeResourceBundles=consoleui_messages,jline.console.completer.CandidateListCompletionHandler \
                       -H:ReflectionConfigurationFiles=graal/reflect-config.json \
                       -H:+ReportExceptionStackTraces
       - uses: actions/upload-artifact@v3
@@ -57,10 +56,9 @@ jobs:
           clojure -M:uberjar --main-class cr2.core
           native-image -jar target/cr2.0-encounter-calculator.jar \
                       --no-fallback \
-                      --initialize-at-build-time \
                       --initialize-at-run-time=sun.awt.X11 \
                       --report-unsupported-elements-at-runtime \
-                      -H:IncludeResourceBundles=consoleui_messages \
+                      -H:IncludeResourceBundles=consoleui_messages,jline.console.completer.CandidateListCompletionHandler \
                       -H:ReflectionConfigurationFiles=graal/reflect-config.json \
                       -H:+ReportExceptionStackTraces
       - uses: actions/upload-artifact@v3
@@ -84,16 +82,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Graal image
         run: |
+          native-image --help
           mkdir -p classes
           clojure -M -e "(compile 'cr2.core)"
           clojure -M:uberjar --main-class cr2.core
-          native-image -jar target/cr2.0-encounter-calculator.jar \
-                      --no-fallback \
-                      --initialize-at-build-time \
-                      --report-unsupported-elements-at-runtime \
-                      -H:IncludeResourceBundles=consoleui_messages \
-                      -H:ReflectionConfigurationFiles=graal/reflect-config.json \
-                      -H:+ReportExceptionStackTraces
+          native-image -jar target/cr2.0-encounter-calculator.jar --no-fallback --report-unsupported-elements-at-runtime -H:IncludeResourceBundles=consoleui_messages,jline.console.completer.CandidateListCompletionHandler -H:ReflectionConfigurationFiles=graal/reflect-config.json -H:+ReportExceptionStackTraces
       - uses: actions/upload-artifact@v3
         with:
           name: cr2.0-encounter-calculator-macos
