@@ -1,5 +1,0 @@
-{
-  "resources": [
-    {"pattern": "META-INF/native/windows64/jansi.dll"}
-  ]
-}
