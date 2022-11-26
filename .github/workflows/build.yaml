@@ -15,7 +15,7 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: DeLaGuardo/setup-clojure@9.4
+      - uses: DeLaGuardo/setup-clojure@9.5
         with:
           cli: latest
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -47,7 +47,7 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: DeLaGuardo/setup-clojure@9.4
+      - uses: DeLaGuardo/setup-clojure@9.5
         with:
           cli: latest
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -80,7 +80,7 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: DeLaGuardo/setup-clojure@9.4
+      - uses: DeLaGuardo/setup-clojure@9.5
         with:
           cli: latest
           github-token: ${{ secrets.GITHUB_TOKEN }}
