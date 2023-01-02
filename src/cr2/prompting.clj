@@ -6,7 +6,6 @@
            (jline.console.completer Completer)))
 
 (def ^:private ^ConsolePrompt console-prompt (ConsolePrompt.))
-(def ^:private input-threshold 10)
 (def default-opts {:completer :regular
                    :sorted?   true
                    :none-opt? true})
@@ -60,37 +59,20 @@
     (stringify-keys opts coll)
     (into (if sorted? (sorted-map) (ordered-map)) (map (juxt stringify identity)) coll)))
 
-(defn >>input
-  ([] (>>input "Enter text:"))
-  ([prompt] (>>input prompt nil))
-  ([prompt coll & {:as opts}]
-   (let [console-prompt (ConsolePrompt.)
-         {:keys [completer]} (merge default-opts opts)
-         prompt-builder (.getPromptBuilder console-prompt)
-         stringified-map (->stringified-map coll opts)
-         valid-inputs (when (seq stringified-map) (set (keys stringified-map)))
-         lowers->original (into {} (map (juxt str/lower-case identity)) valid-inputs)
-         value-mapper (if valid-inputs
-                        (comp stringified-map lowers->original)
-                        identity)
-         s (into (sorted-set) (keys lowers->original))]
-     (-> prompt-builder
-         (.createInputPrompt)
-         (.message prompt)
-         (.name prompt)
-         (cond-> valid-inputs (.addCompleter
-                                (case completer
-                                  :regular (CaseInsensitiveStringsCompleter. s lowers->original)
-                                  :comma-separated (CommaSeparatedStringsCompleter. s lowers->original false)
-                                  :comma-separated-once (CommaSeparatedStringsCompleter. s lowers->original true))))
-         (.addPrompt))
-     (when-let [input (-> (.prompt console-prompt (.build prompt-builder))
-                          ^InputResult (get prompt)
-                          (.getInput))]
-       (case completer
-         :regular (value-mapper (str/lower-case (str/trimr input)))
-         (:comma-separated :comma-separated-once) (->> (str/split input #",")
-                                                       (keep (comp value-mapper str/lower-case str/trim))))))))
+(defn >>input [prompt & {:as opts}]
+  (let [console-prompt (ConsolePrompt.)
+        {:keys [default]} (merge default-opts opts)
+        prompt-builder (.getPromptBuilder console-prompt)]
+    (-> prompt-builder
+        (.createInputPrompt)
+        (.message prompt)
+        (.name prompt)
+        (cond-> default (.defaultValue (str default)))
+        (.addPrompt))
+    (when-let [input (-> (.prompt console-prompt (.build prompt-builder))
+                         ^InputResult (get prompt)
+                         (.getInput))]
+      (str/lower-case (str/trimr input)))))
 
 
 (defn >>item
@@ -98,22 +80,20 @@
   ([prompt coll & {:as opts}]
    (let [{:keys [none-opt?] :as opts} (merge default-opts opts)
          m (->stringified-map coll opts)]
-     (if (> (count m) input-threshold)
-       (>>input prompt m)
-       (let [prompt-builder (.getPromptBuilder console-prompt)
-             lbp (-> (.createListPrompt prompt-builder)
-                     (.message prompt)
-                     (as-> builder (reduce
-                                     #(doto ^ListPromptBuilder %1
-                                        (-> (.newItem %2)
-                                            (.text %2)
-                                            .add))
-                                     builder
-                                     (cond-> (keys m)
-                                             none-opt? (conj "\u001B[31mNone\u001B[0m")))))]
-         (.addPrompt ^ListPromptBuilder lbp)
-         (-> (.prompt console-prompt (.build prompt-builder))
-             ^ListResult (get prompt)
-             .getSelectedId
-             m))))))
+     (let [prompt-builder (.getPromptBuilder console-prompt)
+           lbp (-> (.createListPrompt prompt-builder)
+                   (.message prompt)
+                   (as-> builder (reduce
+                                   #(doto ^ListPromptBuilder %1
+                                      (-> (.newItem %2)
+                                          (.text %2)
+                                          .add))
+                                   builder
+                                   (cond-> (keys m)
+                                           none-opt? (conj "\u001B[31mNone\u001B[0m")))))]
+       (.addPrompt ^ListPromptBuilder lbp)
+       (-> (.prompt console-prompt (.build prompt-builder))
+           ^ListResult (get prompt)
+           .getSelectedId
+           m)))))
 

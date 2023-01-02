@@ -1,14 +1,10 @@
 (ns cr2.core
   (:gen-class)
-  (:require [cr2.prompting :as p]
-            [puget.printer :as puget])
+  (:require
+    [clojure.string :as str]
+    [cr2.prompting :as p]
+    [puget.printer :as puget])
   (:import (org.fusesource.jansi AnsiConsole)))
-
-(defmacro when-let* [bindings & body]
-  (if (seq bindings)
-    `(when-let [~(first bindings) ~(second bindings)]
-       (when-let* ~(drop 2 bindings) ~@body))
-    `(do ~@body)))
 
 (def ^:private default-players-amount 3)
 (def ^:private default-max-enemies 5)
@@ -61,18 +57,18 @@
       multiplier)))
 
 (defn- select-max-enemies []
-  (if-let [max-enemies-str (p/>>input (str "What is the maximum number of enemies that should be allowed for this encounter (" default-max-enemies ")?"))]
-    (or (parse-long max-enemies-str) default-max-enemies)
-    default-max-enemies))
+  (parse-long
+    (p/>>input "What is the maximum number of enemies that should be allowed for this encounter?"
+               :default default-max-enemies)))
 
 (defn- select-players-amount []
-  (if-let [players-amount-str (p/>>input (str "How many player characters are in this encounter (" default-players-amount ")?"))]
-    (or (parse-long players-amount-str) default-players-amount)
-    default-players-amount))
+  (parse-long
+    (p/>>input "How many player characters are in this encounter?"
+               :default default-players-amount)))
 
 ;https://www.gmbinder.com/share/-N4m46K77hpMVnh7upYa
 (defn cr2-encounter []
-  (when-let* [level (some-> (p/>>input "What level are the players?") parse-long)]
+  (when-let [level (some-> (p/>>input "What level are the players?") parse-long)]
     (let [max-enemies (select-max-enemies)
           players-amount (select-players-amount)
           player-power (->> (dec level)
@@ -103,7 +99,11 @@
 
 (defn -main [& _]
   (AnsiConsole/systemInstall)
-  (loop [result (cr2-encounter)]
-    (when result
-      (puget/cprint result)
-      (recur (cr2-encounter)))))
+  (let [colour? (-> (System/getProperty "os.name")
+                    (str/includes? "Windows")
+                    not)]
+    (loop [result (cr2-encounter)]
+      (when result
+        (puget/cprint result
+                      {:print-color colour?})
+        (recur (cr2-encounter))))))
