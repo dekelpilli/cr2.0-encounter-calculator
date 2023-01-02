@@ -104,6 +104,6 @@
                     not)]
     (loop [result (cr2-encounter)]
       (when result
-        (puget/cprint result
+        (puget/pprint result
                       {:print-color colour?})
         (recur (cr2-encounter))))))
